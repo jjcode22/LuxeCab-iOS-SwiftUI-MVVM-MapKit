@@ -25,7 +25,7 @@ struct LCMapViewRepresentable: UIViewRepresentable{
     
     func updateUIView(_ uiView: UIViewType, context: Context) {
         if let coordinate = locationViewModel.selectedLocationCoordinate{
-            print("DEBUG: Selected location in mapView is \(coordinate)")
+            context.coordinator.addAndSelectAnnotation(withCoordinate: coordinate)
             
         }
     }
@@ -37,8 +37,10 @@ struct LCMapViewRepresentable: UIViewRepresentable{
 
 extension LCMapViewRepresentable{
     class MapCoordinator: NSObject, MKMapViewDelegate{
+        //MARK: - properties
         let parent: LCMapViewRepresentable
         
+        //MARK: - lifecycle
         init(parent: LCMapViewRepresentable) {
             self.parent = parent
             super.init()
@@ -50,6 +52,18 @@ extension LCMapViewRepresentable{
             
             parent.mapView.setRegion(region, animated: true)
 
+        }
+        
+        //MARK: - helpers
+        
+        func addAndSelectAnnotation(withCoordinate coordinate: CLLocationCoordinate2D){
+            //remove previous annotations
+            parent.mapView.removeAnnotations(parent.mapView.annotations)
+            
+            let anno = MKPointAnnotation()
+            anno.coordinate = coordinate
+            self.parent.mapView.addAnnotation(anno)
+            self.parent.mapView.selectAnnotation(anno, animated: true)
         }
     }
     

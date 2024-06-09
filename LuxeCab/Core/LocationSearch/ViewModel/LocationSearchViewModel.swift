@@ -22,6 +22,8 @@ class LocationSearchViewModel: NSObject, ObservableObject{
         }
     }
     
+    //MARK: - lifecycle
+    
     override init() {
         super.init()
         searchCompleter.delegate = self
