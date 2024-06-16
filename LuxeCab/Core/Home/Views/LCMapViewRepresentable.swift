@@ -38,6 +38,7 @@ struct LCMapViewRepresentable: UIViewRepresentable{
             break
         case .locationSelected:
             if let coordinate = locationViewModel.selectedLocationCoordinate{
+                print("DEBUG: Coordinate is \(coordinate)")
                 context.coordinator.addAndSelectAnnotation(withCoordinate: coordinate)
                 context.coordinator.configurePolyline(withDestinationCoordinate: coordinate)
             }
@@ -109,13 +110,16 @@ extension LCMapViewRepresentable{
             parent.mapView.addAnnotation(anno)
             parent.mapView.selectAnnotation(anno, animated: true)
             
-            parent.mapView.showAnnotations(parent.mapView.annotations, animated: true)
+            
         }
         
         func configurePolyline(withDestinationCoordinate coordinate: CLLocationCoordinate2D){
             guard let userLocationCoordinate = self.userLocationCoordinate else {return}
             getDestinationRoute(from: userLocationCoordinate, to: coordinate) { route in
                 self.parent.mapView.addOverlay(route.polyline)
+                //reframing our mapView to fit our annotations when location is selected w cab options in RideRequestView
+                let rect = self.parent.mapView.mapRectThatFits(route.polyline.boundingMapRect, edgePadding: .init(top: 64, left: 32, bottom: 500, right: 32))
+                self.parent.mapView.setRegion(MKCoordinateRegion(rect), animated: true)
                 
             }
         }
