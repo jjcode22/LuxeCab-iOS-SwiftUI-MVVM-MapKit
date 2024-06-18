@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct RideRequestView: View {
+    @State private var selectedRideType: RideType = .luxeCabX
+    @EnvironmentObject var locationViewModel: LocationSearchViewModel
+    
     var body: some View {
         VStack {
             Capsule()
                 .foregroundColor(Color(.systemGray5))
-                .frame(width: 48, height: 6)
+                .frame(width: 128, height: 6)
                 .padding(.top,8)
             
             //Trip info view
@@ -77,25 +80,32 @@ struct RideRequestView: View {
             
             ScrollView(.horizontal){
                 HStack(spacing: 12){
-                    ForEach(0..<3, id: \.self) { _ in
-                        VStack(alignment: .leading){
-                            Image("uber-x")
+                    ForEach(RideType.allCases) { type in
+                        VStack(alignment: .leading, spacing: 4){
+                            Image(type.imageName)
                                 .resizable()
                                 .scaledToFit()
                             
-                            VStack(spacing: 4){
-                                Text("UberX")
+                            VStack(alignment: .leading,spacing: 4){
+                                Text(type.description)
                                     .font(.system(size: 14,weight: .semibold))
                                 
-                                Text("₹120")
+                                Text(locationViewModel.computeRidePrice(forType: type).toCurrency())
                                     .font(.system(size: 14,weight: .semibold))
                             }
                             .padding(8)
                             
                         }
                         .frame(width: 112, height: 140)
-                        .background(Color(.systemGroupedBackground))
+                        .foregroundColor(type == selectedRideType ? .white : .black)
+                        .background(Color(type == selectedRideType ? .systemBlue : .systemGroupedBackground))
+                        .scaleEffect(type == selectedRideType ? 1.25 : 1.0)
                         .cornerRadius(10)
+                        .onTapGesture {
+                            withAnimation(.spring()){
+                                selectedRideType =  type
+                            }
+                        }
                     }
                 }
             }

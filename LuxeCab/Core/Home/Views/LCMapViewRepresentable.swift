@@ -10,7 +10,7 @@ import MapKit
 
 struct LCMapViewRepresentable: UIViewRepresentable{
     let mapView = MKMapView()
-    let locationManager = LocationManager()
+    let locationManager = LocationManager.shared
     @Binding var mapState: MapViewState
     @EnvironmentObject var locationViewModel: LocationSearchViewModel
     @State private var isUserInteracting = false

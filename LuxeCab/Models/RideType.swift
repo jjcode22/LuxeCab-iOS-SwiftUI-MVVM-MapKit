@@ -16,7 +16,7 @@ enum RideType: Int, CaseIterable, Identifiable{
     
     var description: String{
         switch self{
-        case .luxeCabS: return "LuxeCab S"
+        case .luxeCabS: return "LuxeAuto S"
         case .luxeCabX: return "LuxeCab X"
         case .luxeCabXL: return "LuxeCab XL"
         }
@@ -24,9 +24,33 @@ enum RideType: Int, CaseIterable, Identifiable{
     
     var imageName: String{
         switch self{
-        case .luxeCabS: return "uber-x"
-        case .luxeCabX: return "uber-black"
-        case .luxeCabXL: return "uber-x"
+        case .luxeCabS: return "luxAuto-s"
+        case .luxeCabX: return "uber-x"
+        case .luxeCabXL: return "uber-black"
+        }
+    }
+    
+    var baseFare: Double {
+        switch self {
+        case .luxeCabS:
+            return 30
+        case .luxeCabX:
+            return 50
+        case .luxeCabXL:
+            return 90
+        }
+    }
+    
+    func computePrice(for distanceInMeters: Double) -> Double {
+        let distanceInMiles =  distanceInMeters / 1600
+        
+        switch self {
+        case .luxeCabS:
+            return distanceInMiles * 1.2 * baseFare
+        case .luxeCabX:
+            return distanceInMiles * 1.5 * baseFare
+        case .luxeCabXL:
+            return distanceInMiles * 2.0 * baseFare
         }
     }
 }
